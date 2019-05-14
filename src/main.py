@@ -57,7 +57,7 @@ def prepare_logfiles(log_folder, start_date, end_date, cluster_mode):
     if len(log_files) == 0:
         print("No logs found for the given date period", file=sys.stderr)
         sys.exit(1)
-    print("Found {} days of log files in the given date period".format(sum(1 for d in log_files if d[0] >= start_date)))
+    print("Found {} days of log files in the given date period".format(sum(1 for d in log_files if not start_date or d[0] >= start_date)))
         
     # Filter restart datetimes
     restart_datetimes = filter_restart_datetimes(total_restart_datetimes, restart_datetime, end_date)
@@ -108,7 +108,7 @@ def main(log_folder, start_date, end_date, cluster_mode):
             log_name = str(Path(dir_name) / file_name)
             
             # Signal start
-            if not started and from_dt.date() >= start_date:
+            if not started and (not start_date or from_dt.date() >= start_date):
                 handler.signal_start(restart_datetime.timestamp())
                 started = True
             
