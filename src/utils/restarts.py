@@ -23,7 +23,9 @@ def iterate_restart_datetimes(log_folder, log_files, start_date=None, end_date=N
         if end_date and log_date > end_date: continue
         
         # Iterate stdout log files
-        if STDOUT not in log_files[(log_date, dir_name)]: continue
+        if STDOUT not in log_files[(log_date, dir_name)]: 
+            print("Not stdout.log found")
+            continue
         for (from_datetime, to_datetime, file_name) in log_files[(log_date, dir_name)][STDOUT]:
             # Read log file
             with gzip.open(str(log_folder / dir_name / file_name), "rt") as f:

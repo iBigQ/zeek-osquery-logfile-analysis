@@ -21,6 +21,7 @@ class OsqueryHosts():
         # Only keep last online timestamp
         
         # Prune online hosts
+        to_delete = list()
         for host in self.osquery_connects:
             # Only connects
             if host not in self.osquery_disconnects:
@@ -28,12 +29,18 @@ class OsqueryHosts():
             
             # Currently offline
             if len(self.osquery_connects[host]) == len(self.osquery_disconnects[host]):
-                del self.osquery_connects[host]
-                del self.osquery_disconnects[host]
+                #del self.osquery_connects[host]
+                #del self.osquery_disconnects[host]
+                to_delete.append(host)
                 
             # Cleanup
             self.osquery_connects[host] = self.osquery_connects[host][len(self.osquery_disconnects[host]):]
             self.osquery_disconnects[host] = list()
+
+        for host in to_delete:
+            del self.osquery_connects[host]
+            del self.osquery_disconnects[host]
+
     
     def signal_restart(self, ts):
         # Force close peerings

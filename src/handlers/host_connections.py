@@ -78,9 +78,18 @@ class HostConnections():
             entry = (host, pid, fd)
             value = (binary_path, state, local_ip, local_port, remote_ip, remote_port, protocol)
 
+            #print((entry, added, value))
+
             # Remove entry
             if added != "T": 
+                if entry not in self.host_conns:
+                    print("Unable to remove value for unknown entry")
+                    continue
+                if value not in self.host_conns[entry]:
+                    print("Unable to remove unknown value")
+                    continue
                 self.host_conns[entry].remove(value)
+                #print("Sucessfully removed")
                 continue
             
             if entry not in self.host_conns:

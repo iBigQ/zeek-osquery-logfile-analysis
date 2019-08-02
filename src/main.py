@@ -92,6 +92,7 @@ def main(log_folder, start_date, end_date, cluster_mode):
     
     # Iterate Handlers
     for (o_name, h_name) in handlers_sequence:
+        print("Invoking Handler '{}' for logfile: {}".format(h_name, o_name))
         
         # Get handler
         handler = handlers[h_name]
@@ -137,9 +138,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Statistics about the zeek-osquery log files')
     
     # Define arguments
-    parser.add_argument('cluster_mode', type=bool, help='Whether cluster mode is enabled or not')
+    parser.add_argument('--cluster_mode', action='store_true', help='Enables processing log files from cluster mode')
     # - Log Folder
-    parser.add_argument('--log_dir', type=str, default='/usr/local/bro', help='The log directory of Zeek')
+    parser.add_argument('--log_dir', type=str, default='/usr/local/bro/logs', help='The log directory of Zeek')
     # - Start Date
     parser.add_argument('--start_date', type=str, help='The earliest day of log files (YYYY-MM-DD)')
     # - End Date
@@ -182,7 +183,17 @@ if __name__ == '__main__':
     if (start_date and end_date and end_date < start_date):
         print("End date must be after start date", file=sys.stderr)
         sys.exit(1)
+
+    # - Mode
+    if (args.cluster_mode):
+        print("Cluster Mode: {}".format("enabled"))
+        cluster_mode = True
+    else:
+        print("Cluster Mode: {}".format("disabled"))
+        cluster_mode = False
+
+
     
     # Start Analysis
-    main(log_folder, start_date, end_date, args.cluster_mode)
+    main(log_folder, start_date, end_date, cluster_mode)
     
