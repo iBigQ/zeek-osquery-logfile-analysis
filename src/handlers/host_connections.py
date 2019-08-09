@@ -103,49 +103,57 @@ class HostConnections():
                 
                 # New binary
                 if ex_binary_path != binary_path:
-                    exists = True
-                    break
+                    #print("Binary path not equal")
+                    continue
                 
                 # Different remote
                 if state == "established":
                     if (ex_state == "connect" and
                         ex_remote_ip == remote_ip and ex_remote_port == remote_port):
                         exists = True
-                        break
                 elif state == "connect":
                     if (ex_state == "established" and
                         ex_remote_ip == remote_ip and ex_remote_port == remote_port):
                         exists = True
-                        break
                 elif state == "listening":
                     if (ex_state == "bind" and
                         ex_remote_port not in (-1,0) and ex_remote_port == remote_port):
                         exists = True
-                        break
                 elif state == "bind":
                     if (ex_state == "listening" and
                         ex_remote_port not in (-1,0) and ex_remote_port == remote_port):
                         exists = True
-                        break
                 else:
                     raise RuntimeError("Unknown State {} for Host Connections".format(state))
+
+                if exists:
+                    #print("Found a duplicate")
+                    break
                 
             self.host_conns[entry].append(value)
-                
+            if exists:
+                continue
+            
             # New connection
-            if not exists:
-                if binary_path in self.binary_counter:
-                    self.binary_counter[binary_path] += 1
-                else:
-                    self.binary_counter[binary_path] = 1
+            if binary_path in self.binary_counter:
+                self.binary_counter[binary_path] += 1
+            else:
+                self.binary_counter[binary_path] = 1
     
     def process_end(self, handlers):
         return
     
     def format_results(self):
         s = ""
-        s += "Top 10 Binaries for host connections: {}".format(
-            sorted(self.binary_counter.items(), key=lambda x:x[1], reverse=True)[:10]
-            )
+#        s += "Top 10 Binaries for host connections: {}".format(
+#            sorted(self.binary_counter.items(), key=lambda x:x[1], reverse=True)[:10]
+#            )
+        s += "Top Binaries for host connections:\n"
+        total = sum(self.binary_counter.values())
+        print("Total {}".format(total))
+        i = 1
+        for e in sorted(self.binary_counter.items(), key=lambda x:x[1], reverse=True):
+            s += "{}\t{} ({:3.2f}%)\n".format(i, e, e[1]/total*100)
+            i += 1
         
         return s

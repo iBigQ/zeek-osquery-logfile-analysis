@@ -70,11 +70,23 @@ class Software():
     
     def format_results(self):
         s = ""
-        s += "Top 10 software: {}".format(
-            sorted(self.software.items(), key=lambda x:x[1], reverse=True)[:10]
-            ) + "\n"
-        s += "Top 10 versions: {}".format(
-            sorted(self.versions.items(), key=lambda x:x[1], reverse=True)[:10]
-            )
-        
+#        s += "Top 10 software: {}".format(
+#            sorted(self.software.items(), key=lambda x:x[1], reverse=True)[:10]
+#            ) + "\n"
+#        s += "Top 10 versions: {}".format(
+#            sorted(self.versions.items(), key=lambda x:x[1], reverse=True)[:10]
+#            )
+        s += "Top software:\n"
+        total = sum(self.software.values())
+        print("Total {}".format(total))
+        i = 1
+        for e in sorted(self.software.items(), key=lambda x:x[1], reverse=True):
+            s += "{}\t{} ({:3.2f}%)\n".format(i, e, e[1]/total*100)
+            i += 1
+        s += "Top 10 versions:\n"
+        i = 1
+        for e in sorted(self.versions.items(), key=lambda x:x[1], reverse=True):
+            s += "{}\t{}\n".format(i, e)
+            i += 1
+
         return s

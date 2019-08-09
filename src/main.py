@@ -12,6 +12,7 @@ from handlers.connections import Connections
 from handlers.osquery_hosts import OsqueryHosts
 from handlers.software import Software
 from handlers.host_connections import HostConnections
+from handlers.host_state import HostState
     
 def prepare_logfiles(log_folder, start_date, end_date, cluster_mode):
     # Browse all log files by name
@@ -81,11 +82,16 @@ def main(log_folder, start_date, end_date, cluster_mode):
     handlers["Connections"] = Connections(start_date, end_date)
     handlers["Software"] = Software(start_date, end_date)
     handlers["Host Connections"] = HostConnections(start_date, end_date)
+    handlers["Host State"] = HostState(start_date, end_date)
     handlers_sequence = [
         ("osquery", "Osquery Hosts"), 
         ("conn", "Connections"),
         ("software", "Software"),
         ("osq-process_connections", "Host Connections"),
+        ("osq-process-state", "Host State"),
+        ("osq-socket-state", "Host State"),
+        ("osq-user-state", "Host State"),
+        ("osq-interface-state", "Host State"),
     ]
 
     host_events = 0
